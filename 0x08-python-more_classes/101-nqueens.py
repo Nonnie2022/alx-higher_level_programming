@@ -1,44 +1,44 @@
 #!/usr/bin/python3
 import sys
 
-def nqueens(N):
-    def is_safe(board, row, col):
-        # Check if it is safe to place a queen in the given row and col
-        for i in range(row):
-            if board[i] == col or abs(board[i] - col) == abs(i - row):
-                return False
+def solve_nqueens(board, col, n):
+    if col == n:
+        result = []
+        for i in range(n):
+            row = board[i]
+            result.append([row, i])
+        print(result)
         return True
 
-    def solve(board, row):
-        # Solve the N queens problem
-        if row == N:
-            result.append(board[:])
-            return
-        for col in range(N):
-            if is_safe(board, row, col):
-                board[row] = col
-                solve(board, row + 1)
+    res = False
+    for i in range(n):
+        if is_safe(board, i, col, n):
+            board[col] = i
+            res = solve_nqueens(board, col + 1, n) or res
+            board[col] = -1
 
-    result = []
-    board = [-1] * N
-    solve(board, 0)
-    return result
+    return res
+
+def is_safe(board, row, col, n):
+    for i in range(col):
+        if board[i] == row or \
+           abs(board[i] - row) == abs(i - col):
+            return False
+    return True
 
 if __name__ == '__main__':
     if len(sys.argv) != 2:
         print('Usage: nqueens N')
         sys.exit(1)
-
     try:
-        N = int(sys.argv[1])
-        if N < 4:
-            print('N must be at least 4')
-            sys.exit(1)
+        n = int(sys.argv[1])
     except ValueError:
         print('N must be a number')
         sys.exit(1)
+    if n < 4:
+        print('N must be at least 4')
+        sys.exit(1)
 
-    solutions = nqueens(N)
-    for solution in solutions:
-        print(solution)
+    board = [-1] * n
+    solve_nqueens(board, 0, n)
 
