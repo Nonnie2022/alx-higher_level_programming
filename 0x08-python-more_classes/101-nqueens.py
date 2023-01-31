@@ -1,44 +1,49 @@
 #!/usr/bin/python3
 import sys
 
-def solve_nqueens(board, col, n):
-    if col == n:
-        result = []
-        for i in range(n):
-            row = board[i]
-            result.append([row, i])
-        print(result)
-        return True
-
-    res = False
-    for i in range(n):
-        if is_safe(board, i, col, n):
-            board[col] = i
-            res = solve_nqueens(board, col + 1, n) or res
-            board[col] = -1
-
-    return res
-
-def is_safe(board, row, col, n):
+def is_safe(board, row, col, N):
     for i in range(col):
-        if board[i] == row or \
-           abs(board[i] - row) == abs(i - col):
+        if board[row][i] == 1:
+            return False
+    for i, j in zip(range(row, -1, -1), range(col, -1, -1)):
+        if board[i][j] == 1:
+            return False
+    for i, j in zip(range(row, N, 1), range(col, -1, -1)):
+        if board[i][j] == 1:
             return False
     return True
 
-if __name__ == '__main__':
+def solve_n_queens(board, col, N, solutions):
+    if col >= N:
+        solution = []
+        for i in range(N):
+            for j in range(N):
+                if board[i][j] == 1:
+                    solution.append([i, j])
+        solutions.append(solution)
+        return
+
+    for i in range(N):
+        if is_safe(board, i, col, N):
+            board[i][col] = 1
+            solve_n_queens(board, col + 1, N, solutions)
+            board[i][col] = 0
+
+if __name__ == "__main__":
     if len(sys.argv) != 2:
-        print('Usage: nqueens N')
+        print("Usage: nqueens N")
         sys.exit(1)
     try:
         n = int(sys.argv[1])
     except ValueError:
-        print('N must be a number')
+        print("N must be a number")
         sys.exit(1)
     if n < 4:
-        print('N must be at least 4')
+        print("N must be at least 4")
         sys.exit(1)
-
-    board = [-1] * n
-    solve_nqueens(board, 0, n)
+    board = [[0 for j in range(n)] for i in range(n)]
+    solutions = []
+    solve_n_queens(board, 0, n, solutions)
+    for solution in solutions:
+        print(solution)
 
