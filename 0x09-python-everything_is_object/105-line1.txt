@@ -1,0 +1,6 @@
+Two int objects have been created and are still in memory. One for the value "I", and one for the value "Love".
+Reasons:
+In CPython, small integers (integers from -5 to 256) are stored in a cache called the "small integers cache", also known as NSMALLPOSINTS and NSMALLNEGINTS. 
+This means that each time a small integer is created, it is stored in the cache, and if the same integer is needed again, 
+the same object is returned from the cache instead of a new object being created. 
+This can improve performance by reducing the number of objects that need to be managed in memory.
